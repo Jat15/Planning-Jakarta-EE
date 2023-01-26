@@ -22,7 +22,7 @@
             <!-- update : met à jour le schéma en comparant les entités et le schéma actuel de la base de données  -->
             <!-- create : supprime le schéma de la base de données puis utilise les entités pour le recréer  -->
             <!-- create-drop : effectue l'option create à la fermeture de l'EntityManagerFactory  -->
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
         </properties>
     </persistence-unit>
 
