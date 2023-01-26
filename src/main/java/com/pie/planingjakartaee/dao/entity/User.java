@@ -41,7 +41,7 @@ public class User {
     private String country;
     @Column(length = 32)
     private String zip;
-    @Column(name="role_id")
+    @JoinColumn(name="role_id")
     @ManyToOne
     private Role role;
     public User(){
