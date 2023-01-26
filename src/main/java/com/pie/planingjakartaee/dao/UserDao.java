@@ -2,6 +2,7 @@ package com.pie.planingjakartaee.dao;
 
 import com.pie.planingjakartaee.dao.entity.User;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
 import java.util.ArrayList;
@@ -37,7 +38,18 @@ public class UserDao implements Dao<User> {
 
     @Override
     public void create(User user) {
-
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        try {
+            em.persist(user);
+            et.commit();
+        } catch (Exception e){
+            if (et.isActive()) {
+                et.rollback();
+            }
+        } finally {
+            em.close();
+        }
     }
 
     @Override
