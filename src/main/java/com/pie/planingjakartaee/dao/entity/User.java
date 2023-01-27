@@ -15,7 +15,7 @@ public class User {
     private int id;
     @Column(length = 50)
     private String pseudo;
-    @Column(length = 75)
+    @Column(unique = true, length = 75)
     private String email;
     @Column(name="last_name", length = 50)
     private String lastName;
