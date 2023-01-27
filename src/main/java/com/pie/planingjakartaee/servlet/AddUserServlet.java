@@ -38,13 +38,16 @@ public class AddUserServlet extends HttpServlet {
 
         String phone = req.getParameter("phone");
 
+        //Hash password
         String password = req.getParameter("password");
         //String createDate = req.getParameter("createDate");
         //String modifyDate = req.getParameter("modifyDate");
 
+
         //Activate account
         String activateString = req.getParameter("activate");
-        Boolean activate = Boolean.valueOf(activateString);
+        Boolean activate = activateString == "" ? true: false;
+
         //Adress
         String street = req.getParameter("street");
         String city = req.getParameter("city");
@@ -69,5 +72,6 @@ public class AddUserServlet extends HttpServlet {
 
         DaoFactory.getUserDao().create(newUser);
 
+        resp.sendRedirect("/users");
     }
 }
