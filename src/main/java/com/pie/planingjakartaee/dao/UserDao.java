@@ -31,7 +31,6 @@ public class UserDao implements Dao<User> {
         } finally {
             em.close();
         }
-
         return result;
     }
 
@@ -73,6 +72,17 @@ public class UserDao implements Dao<User> {
 
     @Override
     public void delete(User user) {
-
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        try {
+            em.remove(em.contains(user) ? user : em.merge(user));
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+        } finally {
+            em.close();
+        }
     }
 }
