@@ -16,9 +16,7 @@
     <body class="container">
 
     <header class="row">
-
-
-
+        <%@include file="include/navbar.jsp" %>
     </header>
     <main class="row">
         <form action="${pageContext.request.contextPath}/user/add" method="post">
