@@ -19,7 +19,7 @@ public class ListUserServlet extends HttpServlet {
         UserDao dao = DaoFactory.getUserDao();
         List<User> userList = dao.getAll();
         req.setAttribute("users", userList);
-        req.getRequestDispatcher("/WEB-INF/users-list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/usersList.jsp").forward(req, resp);
 
     }
 }
