@@ -18,7 +18,21 @@ public class UserDao implements Dao<User> {
 
     @Override
     public Optional<User> get(int id) {
-        return Optional.empty();
+        Optional<User> result = Optional.empty();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        try {
+            result = Optional.of(em.find(User.class, id));
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+        } finally {
+            em.close();
+        }
+
+        return result;
     }
 
     @Override
