@@ -17,6 +17,9 @@
 <body>
 
 <div class="container">
+  <header class="row">
+    <%@include file="include/navbar.jsp" %>
+  </header>
   <div class="row  row-cols-2">
     <c:forEach items="${users}" var="user">
     <div class="card text-bg-light p-0 m-3" style="max-width: 18rem;">
