@@ -28,7 +28,7 @@
         <h5 class="card-title">${user.lastName} ${user.firstName}</h5>
         <p class="card-text">${user.email}</p>
         <p>
-          <a href="#" class="btn btn-primary">Details</a>
+          <a href="${pageContext.request.contextPath}/user/update?id=${user.id}" class="btn btn-primary">Details</a>
           <c:choose>
             <c:when test="${user.activate}">
               <a href="#" class="btn btn-success">Activate</a>
