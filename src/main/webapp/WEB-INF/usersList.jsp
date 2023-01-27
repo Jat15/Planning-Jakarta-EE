@@ -37,7 +37,7 @@
         </p>
         <p>
           <a href="#" class="btn btn-primary">Edit</a>
-          <a href="#" class="btn btn-danger">Delete</a>
+          <a href="${pageContext.request.contextPath}/user/delete?id=${user.id}" class="btn btn-danger">Delete</a>
         </p>
       </div>
     </div>
