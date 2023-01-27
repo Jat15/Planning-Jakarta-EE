@@ -23,19 +23,28 @@ public class UpdateUserServlet extends HttpServlet {
 
             if (userOptional.isPresent()) {
 
-                req.setAttribute(userOptional.get().getPseudo(),"pseudo");
-                req.setAttribute(userOptional.get().getEmail(),"email");
-                req.setAttribute(userOptional.get().getLastName(),"lastName");
-                req.setAttribute(userOptional.get().getFirstName(),"firstName");
-                req.setAttribute(userOptional.get().getAvatar(),"avatar");
-                //req.setAttribute(userOptional.get().getBirthdate(),"birthdate");
-                req.setAttribute(userOptional.get().getPhone(),"phone");
+
+
+                req.setAttribute("pseudo", userOptional.get().getPseudo());
+                req.setAttribute("email", userOptional.get().getEmail());
+                req.setAttribute("lastName", userOptional.get().getLastName());
+                req.setAttribute("firstName", userOptional.get().getFirstName());
+                req.setAttribute("avatar", userOptional.get().getAvatar());
+
+                //A revoir
+                req.setAttribute("birthdate", userOptional.get().getBirthdate());
+                
+                req.setAttribute("phone", userOptional.get().getPhone());
+
+                //Pas besoins
                 //req.setAttribute(userOptional.get().getPassword(),"");
+                //Update
                 //req.setAttribute(userOptional.get().getActivate(),"activate");
-                req.setAttribute(userOptional.get().getStreet(),"street");
-                req.setAttribute(userOptional.get().getCity(),"city");
-                req.setAttribute(userOptional.get().getCountry(),"country");
-                req.setAttribute(userOptional.get().getZip(),"zip");
+
+                req.setAttribute("street", userOptional.get().getStreet());
+                req.setAttribute("city", userOptional.get().getCity());
+                req.setAttribute("country", userOptional.get().getCountry());
+                req.setAttribute("zip", userOptional.get().getZip());
 
 
             }
@@ -47,6 +56,8 @@ public class UpdateUserServlet extends HttpServlet {
         } catch (Exception e) {
 
         }
+
+        req.getRequestDispatcher("/WEB-INF/userAdd.jsp").forward(req, resp);
 
     }
 }
