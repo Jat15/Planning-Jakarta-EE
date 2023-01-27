@@ -18,7 +18,38 @@ public class UserDao implements Dao<User> {
 
     @Override
     public Optional<User> get(int id) {
-        return Optional.empty();
+        Optional<User> result = Optional.empty();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        try {
+            result = Optional.of(em.find(User.class, id));
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+        } finally {
+            em.close();
+        }
+        return result;
+    }
+
+    @Override
+    public Optional<User> getPassword(String email) {
+        Optional<User> result = Optional.empty();
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        try {
+            result = Optional.of(em.find(User.class, email));
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+        } finally {
+            em.close();
+        }
+        return result;
     }
 
     @Override
@@ -54,11 +85,33 @@ public class UserDao implements Dao<User> {
 
     @Override
     public void update(User user) {
-
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        try {
+            em.merge(user);
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+        } finally {
+            em.close();
+        }
     }
 
     @Override
     public void delete(User user) {
-
+        EntityTransaction et = em.getTransaction();
+        et.begin();
+        try {
+            em.remove(em.contains(user) ? user : em.merge(user));
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+        } finally {
+            em.close();
+        }
     }
 }
