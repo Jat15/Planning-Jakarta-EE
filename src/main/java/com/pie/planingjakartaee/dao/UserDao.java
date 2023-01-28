@@ -34,7 +34,7 @@ public class UserDao implements Dao<User> {
         return result;
     }
 
-    @Override
+
     public Optional<User> getPassword(String email) {
         Optional<User> result = Optional.empty();
         EntityTransaction et = em.getTransaction();
