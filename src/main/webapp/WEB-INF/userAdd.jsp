@@ -61,7 +61,7 @@
 
             <div class="input-group mb-3">
                 <div class="input-group-text">
-                    <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Activate" aria-describedby="basic-addon10" name="activate" value="${activate}">
+                    <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Activate" aria-describedby="basic-addon10" name="activate" ${activate? "checked" : ""}>
                 </div>
                 <span class="input-group-text" id="basic-addon10">Activate</span>
             </div>
@@ -88,7 +88,7 @@
             <div class="text-center mb-3">
                 <select class="form-select" aria-label="Choose role for user" name="idRole">
                     <c:forEach items="${roles}" var="role">
-                        <option value=${role.id} ${role.name == roleName ? "selected":""}>${role.name}</option>
+                        <option value=${role.id} ${role.name == roleName ? "selected":""} ${ role.id < myRole ? "" : "disabled"}>${role.name}</option>
                     </c:forEach>
                 </select>
             </div>
