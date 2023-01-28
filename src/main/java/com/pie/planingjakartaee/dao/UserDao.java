@@ -40,7 +40,8 @@ public class UserDao implements Dao<User> {
         EntityTransaction et = em.getTransaction();
         et.begin();
         try {
-            result = Optional.of(em.find(User.class, email));
+            //result = Optional.of(em.find(User.class, email));
+            result = Optional.of(em.createQuery("SELECT p FROM User p WHERE p.email LIKE ?1 ", User.class).setParameter(1, email ).getSingleResult());
             et.commit();
         } catch (Exception e) {
             if (et.isActive()) {
