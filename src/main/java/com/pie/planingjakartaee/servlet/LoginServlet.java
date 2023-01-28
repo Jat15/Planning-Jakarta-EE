@@ -34,9 +34,10 @@ public class LoginServlet extends HttpServlet {
         if (user.isPresent()) {
             //verify password
             if (password.equals(user.get().getPassword())){
-                connected = true;
+                connected = user.get().getRole().getId() > 1;
             }
         }
+
 
         if (connected) {
             User newUser = user.get();
