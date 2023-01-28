@@ -18,12 +18,11 @@ import java.util.Optional;
 public class ListUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Boolean accesPage = false;
         HttpSession session = req.getSession();
-
         User user = (User) session.getAttribute("user");
 
-        if (user != null){
+        Boolean accesPage = false;
+        if (user != null ) {
             accesPage = user.getRole().getId() > 1;
         }
 
