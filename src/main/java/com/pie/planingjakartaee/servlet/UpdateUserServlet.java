@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @WebServlet( urlPatterns = "/user/update")
 public class UpdateUserServlet extends HttpServlet {
@@ -20,13 +19,24 @@ public class UpdateUserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idString = req.getParameter("id");
 
+        //Emulate Session
+        int myRole = 2;
+
+        String myRoleString = req.getParameter("roleId");
+
+        try {
+            myRole = Integer.parseInt(myRoleString);
+        } catch (Exception e) {
+            System.out.println("MyRole n'est pas en param :" + e);
+        }
+
+        req.setAttribute("myRole", myRole);
+
         try {
             int id = Integer.parseInt(idString);
             Optional<User> userOptional = DaoFactory.getUserDao().get(id);
 
             if (userOptional.isPresent()) {
-
-
 
                 req.setAttribute("pseudo", userOptional.get().getPseudo());
                 req.setAttribute("email", userOptional.get().getEmail());
@@ -41,8 +51,8 @@ public class UpdateUserServlet extends HttpServlet {
 
                 //Pas besoins
                 //req.setAttribute(userOptional.get().getPassword(),"");
-                //Update
-                //req.setAttribute(userOptional.get().getActivate(),"activate");
+
+                req.setAttribute("activate", userOptional.get().isActivate());
 
                 req.setAttribute("street", userOptional.get().getStreet());
                 req.setAttribute("city", userOptional.get().getCity());
@@ -50,18 +60,11 @@ public class UpdateUserServlet extends HttpServlet {
                 req.setAttribute("zip", userOptional.get().getZip());
                 req.setAttribute("roleName", userOptional.get().getRole().getName());
 
-
+                //Récupére les roles
                 List<Role> roles= DaoFactory.getRoleDao().getAll();
-
                 req.setAttribute("roles", roles);
 
-
-
             }
-
-
-
-
 
         } catch (Exception e) {
 
