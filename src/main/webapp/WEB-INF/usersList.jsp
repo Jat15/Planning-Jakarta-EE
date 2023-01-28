@@ -27,21 +27,18 @@
       <div class="card-body">
         <h5 class="card-title">${user.lastName} ${user.firstName}</h5>
         <p class="card-text">${user.email}</p>
-        <p>
-          <a href="${pageContext.request.contextPath}/user/update?id=${user.id}" class="btn btn-primary">Details</a>
+        <div class="d-flex flex-column justify-content-center ">
+          <a href="${pageContext.request.contextPath}/user/update?id=${user.id}" class="btn btn-primary m-1">Details</a>
           <c:choose>
             <c:when test="${user.activate}">
-              <a href="#" class="btn btn-success">Activate</a>
+              <a href="#" class="btn btn-success m-1">Activate</a>
             </c:when>
             <c:otherwise>
-              <a href="#" class="btn btn-danger">Desactivate</a>
+              <a href="#" class="btn btn-danger m-1">Desactivate</a>
             </c:otherwise>
           </c:choose>
-        </p>
-        <p>
-          <a href="#" class="btn btn-primary">Edit</a>
-          <a href="${pageContext.request.contextPath}/user/delete?id=${user.id}" class="btn btn-danger">Delete</a>
-        </p>
+          <a href="${pageContext.request.contextPath}/user/delete?id=${user.id}" class="btn btn-danger m-1">Delete</a>
+        </div>
       </div>
     </div>
     </c:forEach>
