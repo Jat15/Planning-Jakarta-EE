@@ -20,9 +20,9 @@
   <header class="row">
     <%@include file="include/navbar.jsp" %>
   </header>
-  <div class="row  row-cols-2">
+  <div class="row row-cols-1 justify-content-center">
     <c:forEach items="${users}" var="user">
-    <div class="card text-bg-light p-0 m-3" style="max-width: 18rem;">
+    <div class="col col-auto card text-bg-light p-0 m-3" >
       <div class="card-header">${user.pseudo}</div>
       <div class="card-body">
         <h5 class="card-title">${user.lastName} ${user.firstName}</h5>
