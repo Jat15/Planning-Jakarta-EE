@@ -22,6 +22,21 @@ public class AddUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        //Emulate Session
+        int myRole = 2;
+
+        String myRoleString = req.getParameter("roleId");
+
+        try {
+            myRole = Integer.parseInt(myRoleString);
+        } catch (Exception e) {
+            System.out.println("MyRole n'est pas en param :" + e);
+        }
+
+        req.setAttribute("myRole", myRole);
+
+
+
         List<Role> rolesAll= DaoFactory.getRoleDao().getAll();
 
         //Filtre
@@ -37,8 +52,6 @@ public class AddUserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //String id = req.getParameter("id");
-
         boolean notError = true;
 
         String pseudo = req.getParameter("pseudo");
