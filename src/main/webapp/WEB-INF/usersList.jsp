@@ -27,6 +27,7 @@
       <div class="card-body">
         <h5 class="card-title">${user.lastName} ${user.firstName}</h5>
         <p class="card-text">${user.email}</p>
+        <p>${user.role.name}</p>
         <div class="d-flex flex-column justify-content-center ">
           <a href="${pageContext.request.contextPath}/user/update?id=${user.id}" class="btn btn-primary m-1">Details</a>
           <c:choose>
