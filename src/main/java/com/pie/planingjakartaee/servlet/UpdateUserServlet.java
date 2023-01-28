@@ -1,6 +1,7 @@
 package com.pie.planingjakartaee.servlet;
 
 import com.pie.planingjakartaee.dao.DaoFactory;
+import com.pie.planingjakartaee.dao.entity.Role;
 import com.pie.planingjakartaee.dao.entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
