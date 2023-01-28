@@ -9,129 +9,143 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = "/user/add")
 public class AddUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User sessionUser = (User) session.getAttribute("user");
 
-        //Emulate Session
-        int myRole = 2;
-
-        String myRoleString = req.getParameter("roleId");
-
-        try {
-            myRole = Integer.parseInt(myRoleString);
-        } catch (Exception e) {
-            System.out.println("MyRole n'est pas en param :" + e);
+        boolean accesPage = false;
+        if (sessionUser != null ) {
+            accesPage = sessionUser.getRole().getId() > 1;
         }
 
-        req.setAttribute("myRole", myRole);
+        if (accesPage) {
+            boolean noErrors = true;
+            int sessionIdRole = sessionUser.getRole().getId();
 
+            req.setAttribute("myRole", sessionIdRole);
 
+            try {
+                List<Role> roles= DaoFactory.getRoleDao().getAll();
+                req.setAttribute("roles", roles);
+            } catch (Exception e) {
+                System.out.println("No acces DB table roles :" + e);
+                noErrors = false;
+            }
 
-        List<Role> rolesAll= DaoFactory.getRoleDao().getAll();
+            RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/userAdd.jsp");
+            rd.forward(req,resp);
+        } else {
+            resp.sendRedirect("/");
+        }
 
-        //Filtre
-        List<Role> roles = rolesAll.stream().filter(g -> ! g.getName().equals("Super")).collect(Collectors.toList());
-
-        req.setAttribute("roles", roles);
-
-
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/userAdd.jsp");
-
-        rd.forward(req,resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        boolean notError = true;
+        HttpSession session = req.getSession();
+        User sessionUser = (User) session.getAttribute("user");
 
-        String pseudo = req.getParameter("pseudo");
-        String email = req.getParameter("email");
-        String lastName = req.getParameter("lastName");
-        String firstName = req.getParameter("firstName");
-        String avatar = req.getParameter("avatar");
-
-        String birthdateString = req.getParameter("birthdate");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
-        LocalDate birthdate =  LocalDate.parse(birthdateString, formatter);
-
-        String phone = req.getParameter("phone");
-
-        //Hash password
-        String password = req.getParameter("password");
-        //String createDate = req.getParameter("createDate");
-        //String modifyDate = req.getParameter("modifyDate");
-
-
-        //Activate account
-        String activateString = req.getParameter("activate");
-        //checkbox "" or null
-        Boolean activate = activateString == "" ? true: false;
-
-        //Adress
-        String street = req.getParameter("street");
-        String city = req.getParameter("city");
-        String country = req.getParameter("country");
-        String zip = req.getParameter("zip");
-
-        String idRoleString = req.getParameter("idRole");
-        int idRole = 0;
-        Optional<Role> role = Optional.empty();
-
-        try {
-            idRole = Integer.parseInt(idRoleString);
-            role = DaoFactory.getRoleDao().get(idRole);
-        } catch (Exception e) {
-            System.out.println("idRole error parse int :" + e);
-            notError = false;
+        boolean accesPage = false;
+        if (sessionUser != null ) {
+            accesPage = sessionUser.getRole().getId() > 1;
         }
 
-        if (notError){
+        if (accesPage) {
+            boolean noErrors = true;
+            int sessionIdRole = sessionUser.getRole().getId();
 
-            User newUser = new User();
+            String pseudo = req.getParameter("pseudo");
+            String email = req.getParameter("email");
+            String lastName = req.getParameter("lastName");
+            String firstName = req.getParameter("firstName");
+            String avatar = req.getParameter("avatar");
 
-            newUser.setPseudo(pseudo);
-            newUser.setEmail(email);
-            newUser.setLastName(lastName);
-            newUser.setFirstName(firstName);
-            newUser.setAvatar(avatar);
-            newUser.setBirthdate(birthdate);
-            newUser.setPhone(phone);
-            newUser.setPassword(password);
-            newUser.setActivate(activate);
-            newUser.setStreet(street);
-            newUser.setCity(city);
-            newUser.setCountry(country);
-            newUser.setZip(zip);
-            newUser.setRole(role.get());
+            String birthdateString = req.getParameter("birthdate");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+            LocalDate birthdate =  LocalDate.parse(birthdateString, formatter);
 
+            String phone = req.getParameter("phone");
+
+            //Hash password
+            String password = req.getParameter("password");
+            //String createDate = req.getParameter("createDate");
+            //String modifyDate = req.getParameter("modifyDate");
+
+
+            //Activate account
+            String activateString = req.getParameter("activate");
+            //checkbox "" or null
+            boolean activate = activateString.equals("");
+
+            //Adress
+            String street = req.getParameter("street");
+            String city = req.getParameter("city");
+            String country = req.getParameter("country");
+            String zip = req.getParameter("zip");
+
+            String idRoleString = req.getParameter("idRole");
+            int idRole = 0;
+            Optional<Role> role = Optional.empty();
 
             try {
-                DaoFactory.getUserDao().create(newUser);
+                idRole = Integer.parseInt(idRoleString);
+                noErrors = idRole >0 && idRole < sessionIdRole;
+                if (noErrors) {
+                    role = DaoFactory.getRoleDao().get(idRole);
+                    noErrors = role.isPresent();
+                }
             } catch (Exception e) {
-                notError = false;
-                System.out.println("User not create :" + e);
+                System.out.println("idRole error parse int :" + e);
+                noErrors = false;
             }
 
 
-        }
 
-        if (notError) {
-            resp.sendRedirect("/users");
+            if (noErrors){
+
+                User newUser = new User();
+
+                newUser.setPseudo(pseudo);
+                newUser.setEmail(email);
+                newUser.setLastName(lastName);
+                newUser.setFirstName(firstName);
+                newUser.setAvatar(avatar);
+                newUser.setBirthdate(birthdate);
+                newUser.setPhone(phone);
+                newUser.setPassword(password);
+                newUser.setActivate(activate);
+                newUser.setStreet(street);
+                newUser.setCity(city);
+                newUser.setCountry(country);
+                newUser.setZip(zip);
+                newUser.setRole(role.get());
+
+                try {
+                    DaoFactory.getUserDao().create(newUser);
+                } catch (Exception e) {
+                    noErrors = false;
+                    System.out.println("User not create :" + e);
+                }
+            }
+
+            if (noErrors) {
+                resp.sendRedirect("/users");
+            } else {
+                resp.sendRedirect("/user/add");
+            }
         } else {
-            resp.sendRedirect("/user/add");
+            resp.sendRedirect("/");
         }
-
-
-
     }
 }
