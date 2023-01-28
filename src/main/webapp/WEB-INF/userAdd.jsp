@@ -20,7 +20,14 @@
         <%@include file="include/navbar.jsp" %>
     </header>
     <main class="row">
-        <form action="${pageContext.request.contextPath}/user/add" method="post">
+        <c:choose>
+            <c:when test="${id > 0}">
+                <form action="${pageContext.request.contextPath}/user/update?id=${id}" method="post">
+            </c:when>
+            <c:otherwise>
+                <form action="${pageContext.request.contextPath}/user/add" method="post">
+            </c:otherwise>
+        </c:choose>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Pseudo</span>
                 <input type="text" class="form-control" placeholder="Pseudo" aria-label="Pseudo" aria-describedby="basic-addon1" name="pseudo" value="${pseudo}">
@@ -93,7 +100,14 @@
                 </select>
             </div>
             <div class="text-center mb-3">
-                <button type="submit" class="btn btn-primary">Add</button>
+                <c:choose>
+                    <c:when test="${id > 0}">
+                        <button type="submit" class="btn btn-primary">Update ${id} </button>
+                    </c:when>
+                    <c:otherwise>
+                        <button type="submit" class="btn btn-primary">Add ${id} </button>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </form>
     </main>
