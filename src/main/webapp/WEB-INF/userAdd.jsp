@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
     <head>
         <title>Add User</title>
@@ -83,6 +84,13 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon14">Zip</span>
                 <input type="text" class="form-control" placeholder="Zip" aria-label="Zip" aria-describedby="basic-addon14" name="zip" value="${zip}">
+            </div>
+            <div class="text-center mb-3">
+                <select class="form-select" aria-label="Choose role for user" name="idRole">
+                    <c:forEach items="${roles}" var="role">
+                        <option value=${role.id} ${role.name == roleName ? "selected":""}>${role.name}</option>
+                    </c:forEach>
+                </select>
             </div>
             <div class="text-center mb-3">
                 <button type="submit" class="btn btn-primary">Add</button>
