@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @WebServlet(urlPatterns = "/users")
 public class ListUserServlet extends HttpServlet {
@@ -27,12 +26,21 @@ public class ListUserServlet extends HttpServlet {
         }
 
         if (accesPage) {
+            boolean noErrors = true;
             UserDao dao = DaoFactory.getUserDao();
-            List<User> userList = dao.getAll();
+
+            List<User> userList = null;
+
+            try {
+                userList = dao.getAll();
+            } catch (Exception e) {
+                System.out.println("User list no " + e);
+                noErrors = false;
+            }
 
             req.setAttribute("users", userList);
             req.getRequestDispatcher("/WEB-INF/usersList.jsp").forward(req, resp);
-        }else {
+        } else {
             resp.sendRedirect("/");
         }
     }
