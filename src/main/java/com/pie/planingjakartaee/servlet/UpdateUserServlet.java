@@ -45,6 +45,13 @@ public class UpdateUserServlet extends HttpServlet {
                 req.setAttribute("city", userOptional.get().getCity());
                 req.setAttribute("country", userOptional.get().getCountry());
                 req.setAttribute("zip", userOptional.get().getZip());
+                req.setAttribute("roleName", userOptional.get().getRole().getName());
+
+
+                List<Role> roles= DaoFactory.getRoleDao().getAll();
+
+                req.setAttribute("roles", roles);
+
 
 
             }
