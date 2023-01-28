@@ -29,7 +29,7 @@
         <p class="card-text">${user.email}</p>
         <p>${user.role.name}</p>
         <div class="d-flex flex-column justify-content-center ">
-          <a href="${pageContext.request.contextPath}/user/update?id=${user.id}" class="btn btn-primary m-1">Details</a>
+          <a href="${pageContext.request.contextPath}/user/update?id=${user.id}" class="btn btn-primary m-1">Update</a>
           <c:choose>
             <c:when test="${user.activate}">
               <a href="#" class="btn btn-success m-1">Activate</a>
