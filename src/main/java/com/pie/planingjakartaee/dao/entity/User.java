@@ -1,6 +1,7 @@
 package com.pie.planingjakartaee.dao.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CurrentTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,37 +14,51 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="user_id")
     private int id;
-    @Column(length = 50)
+    @Column(length = 50, nullable=false)
     private String pseudo;
-    @Column(unique = true, length = 75)
+    @Column(unique = true, length = 75, nullable=false)
     private String email;
-    @Column(name="last_name", length = 50)
+    @Column(name="last_name", length = 50, nullable=false)
     private String lastName;
-    @Column(name="first_name", length = 50)
+    @Column(name="first_name", length = 50, nullable=false)
     private String firstName;
     @Column(length = 50)
     private String avatar;
+    @Temporal(TemporalType.DATE)
+    @Column(nullable=false)
     private LocalDate birthdate;
-    @Column(length = 15)
+    @Column(length = 15, nullable=false)
     private String phone;
+    @Column(nullable=false)
     private String password;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
+    //, nullable=false,  columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable=false
+    //@CreationTimestamp
     private LocalDateTime createdDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modify_date")
+    //,  columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false
+    //@UpdateTimestamp
     private LocalDateTime modifyDate;
+
+    @Column(nullable=false)
     private boolean activate;
-    @Column(length = 100)
+    @Column(length = 100, nullable=false)
     private String street;
-    @Column(length = 50)
+    @Column(length = 50, nullable=false)
     private String city;
-    @Column(length = 50)
+    @Column(length = 50, nullable=false)
     private String country;
-    @Column(length = 32)
+    @Column(length = 32, nullable=false)
     private String zip;
-    @JoinColumn(name="role_id")
+
+    @JoinColumn(name="role_id", nullable = false)
     @ManyToOne
     private Role role;
+
     public User(){
 
     }
