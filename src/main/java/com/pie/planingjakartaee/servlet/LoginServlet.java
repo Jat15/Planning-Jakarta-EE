@@ -35,6 +35,7 @@ public class LoginServlet extends HttpServlet {
             //verify password
             if (password.equals(user.get().getPassword())){
                 connected = user.get().getRole().getId() > 1;
+                connected = user.get().isActivate() && connected;
             }
         }
 
