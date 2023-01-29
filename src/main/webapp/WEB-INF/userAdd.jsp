@@ -63,7 +63,7 @@
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon9">Password</span>
-                <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon9" name="password" value="${password}">
+                <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon9" name="password">
             </div>
 
             <div class="input-group mb-3">
@@ -95,7 +95,7 @@
             <div class="text-center mb-3">
                 <select class="form-select" aria-label="Choose role for user" name="idRole">
                     <c:forEach items="${roles}" var="role">
-                        <option value=${role.id} ${role.name == roleName ? "selected":""} >${role.name}</option>
+                        <option value=${role.id} ${role.name == roleName ? "selected":""} ${ role.id < myRole ? "" : "disabled"}>${role.name}</option>
                     </c:forEach>
                 </select>
             </div>
