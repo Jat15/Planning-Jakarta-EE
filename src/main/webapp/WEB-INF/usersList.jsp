@@ -20,7 +20,7 @@
   <header class="row">
     <%@include file="include/navbar.jsp" %>
   </header>
-  <div class="row row-cols-1 justify-content-center">
+  <main class="row row-cols-1 justify-content-center">
     <c:forEach items="${users}" var="user">
     <div class="col col-auto card text-bg-light p-0 m-3" >
       <div class="card-header">${user.pseudo}</div>
@@ -43,8 +43,8 @@
       </div>
     </div>
     </c:forEach>
-  </div>
-</div>
+  </main>
 
+<%@include file="include/footer.jsp" %>
 </body>
 </html>

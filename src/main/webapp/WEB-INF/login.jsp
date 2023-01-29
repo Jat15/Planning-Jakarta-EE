@@ -12,7 +12,8 @@
         <title>Home</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     </head>
-    <body class="container">
+    <body>
+    <div class="container">
     <header class="row">
         <h1>Gestion de planing</h1>
     </header>
@@ -34,8 +35,6 @@
             </div>
         </form>
     </main>
-    <footer class="row">
-
-    </footer>
+    <%@include file="include/footer.jsp" %>
 </body>
 </html>
