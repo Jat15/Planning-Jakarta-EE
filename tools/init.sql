@@ -1,16 +1,16 @@
 use planning;
 
 insert into roles (role_id,name) values
-(1, "User"),(2, "Admin"),(3, "Super");
+    (1, "User"),(2, "Admin"),(3, "Super");
 
-insert into users (first_name,last_name,email,password,pseudo,role_id,activate) values
-    ("Jean","Bon","super@super.com","super","Superman",3,true),
-    ("Sonny","Lerasle","sonny@super.com","1234","Batman",1,true),
-    ("Thibaud","Bazin","thibaud@hotmail.com","azerty","Pie",1,true),
-    ("Larbi","Lachgare","larbi@gmail.com","test","Zero",1,true),
-    ("Boris","Sauvage","boris@super.com","67YHG","inconnu",1,false),
-    ("Yassine","haouam","yassine@super.com","1234","test",1,true),
-    ("Hamid","Zouba","hamid@super.com","kcdk","Batman",1,true),
-    ("youssef","Lachgare","youssef@super.com","jddd","junior",1,true),
-    ("Maxence","tutois","maxence@super.com","jjjjj","lucky",1,true),
-    ("Pierre","Buirette","pierre@super.com","azerty","star",1,true);
+
+insert into users (pseudo,first_name,last_name,email,password,birthdate,street,city,country,zip,phone,role_id,activate) values
+    ("Supreme","Zeus","Dzeus","super@super.com","super","2000-12-20","01 Mont Olympes","grece","Grèce","00000","0600118218",3,true),
+    ("Batman","Sonny","Lerasle","sonny@gmail.com","test","1985-11-15","17 rue dujardin","Amiens","France","80000","0600118218",1,true),
+    ("Pie","Thibaud","Bazin","thibaud@gmail.com","password","1995-05-12","20 rue la hotoie","Amiens","France","80000","0600118218",1,true),
+    ("Zero","Larbi","Lachgare","larbi@gmail.com","1234","1988-05-20","17 rue de paris","Amiens","France","80000","0600118218",1,true),
+    ("Lucky","Maxence","Tutois","maxence@gmail.com","azerty","1989-09-27","175 rue otages","Amiens","France","80000","0600118218",1,true),
+    ("Formateur","Boris","Sauvage","boris@gmail.com","motdepasse","1988-05-20","65 rue jules verne","Amiens","France","80000","0600118218",1,true),
+    ("Pseudo","Yassine","Haouam","yassine@gmail.com","test1","1986-05-22","124 rue luzarches","Arras","France","62000","0600118218",1,true),
+    ("TestPseudo","Hamid","Zouba","hamid@gmail.com","testpass","1990-06-20","02 rue charles dubois","Arras","France","62000","0600118218",1,true),
+    ("Test","Pierre","Buirette","pierre@gmail.com","test","1992-05-11","17 rue test","Arras","France","62000","0600118218",1,true);
