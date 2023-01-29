@@ -30,6 +30,10 @@ public class UpdateUserServlet extends HttpServlet {
         }
         if (accesPage) {
             String idString = req.getParameter("id");
+
+            int sessionIdRole = sessionUser.getRole().getId();
+            req.setAttribute("myRole", sessionIdRole);
+
             try {
                 int id = Integer.parseInt(idString);
                 Optional<User> userOptional = DaoFactory.getUserDao().get(id);
@@ -43,7 +47,7 @@ public class UpdateUserServlet extends HttpServlet {
                     req.setAttribute("avatar", userOptional.get().getAvatar());
                     req.setAttribute("birthdate", userOptional.get().getBirthdate());
                     req.setAttribute("phone", userOptional.get().getPhone());
-                    req.setAttribute("password", userOptional.get().getPassword());
+                    //req.setAttribute("password", userOptional.get().getPassword());
                     req.setAttribute("activate", userOptional.get().isActivate());
                     req.setAttribute("street", userOptional.get().getStreet());
                     req.setAttribute("city", userOptional.get().getCity());
@@ -92,7 +96,7 @@ public class UpdateUserServlet extends HttpServlet {
             //Formatage date
             String birthdateString = req.getParameter("birthdate");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
-            LocalDate birthdate =  LocalDate.parse(birthdateString, formatter);
+            LocalDate birthdate = LocalDate.parse(birthdateString, formatter);
 
 
             //Hash password
@@ -102,7 +106,7 @@ public class UpdateUserServlet extends HttpServlet {
             //Activate account
             String activateString = req.getParameter("activate");
             //checkbox "" or null
-            Boolean activate = activateString == "" ? true: false;
+            Boolean activate = activateString.equals("");
 
             String idRoleString = req.getParameter("idRole");
             int idRole = 0;
@@ -131,7 +135,11 @@ public class UpdateUserServlet extends HttpServlet {
                         currentUser.setAvatar(avatar);
                         currentUser.setBirthdate(birthdate);
                         currentUser.setPhone(phone);
-                        currentUser.setPassword(password);
+
+                        if (!password.isEmpty()) {
+                            currentUser.setPassword(password);
+                        }
+
                         currentUser.setActivate(activate);
                         currentUser.setStreet(street);
                         currentUser.setCity(city);
