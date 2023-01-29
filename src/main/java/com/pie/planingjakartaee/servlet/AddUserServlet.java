@@ -86,7 +86,7 @@ public class AddUserServlet extends HttpServlet {
             //Activate account
             String activateString = req.getParameter("activate");
             //checkbox "" or null
-            boolean activate = activateString.equals("");
+            boolean activate = activateString != null;
 
             //Adress
             String street = req.getParameter("street");

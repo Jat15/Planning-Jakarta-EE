@@ -106,7 +106,7 @@ public class UpdateUserServlet extends HttpServlet {
             //Activate account
             String activateString = req.getParameter("activate");
             //checkbox "" or null
-            Boolean activate = activateString.equals("");
+            boolean activate = activateString != null;
 
             String idRoleString = req.getParameter("idRole");
             int idRole = 0;
