@@ -68,6 +68,20 @@ public class UserDao implements Dao<User> {
         return users;
     }
 
+    public List<User> getAllByRole(int idRole) {
+        List<User> users = new ArrayList<>();
+
+        try {
+            users =  em.createQuery("select p from User p where p.role.id < ?1", User.class).setParameter(1, idRole ).getResultList();
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            em.close();
+        }
+
+        return users;
+    }
+
     @Override
     public void create(User user) {
         EntityTransaction et = em.getTransaction();
