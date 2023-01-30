@@ -18,21 +18,22 @@ public class ListUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        User user = (User) session.getAttribute("user");
+        User sessionUser = (User) session.getAttribute("user");
 
-        Boolean accesPage = false;
-        if (user != null ) {
-            accesPage = user.getRole().getId() > 1;
+        boolean accesPage = false;
+        if (sessionUser != null ) {
+            accesPage = sessionUser.getRole().getId() > 1;
         }
 
         if (accesPage) {
             boolean noErrors = true;
             UserDao dao = DaoFactory.getUserDao();
+            int sessionIdRole = sessionUser.getRole().getId();
 
             List<User> userList = null;
 
             try {
-                userList = dao.getAll();
+                userList = dao.getAllByRole(sessionIdRole);
             } catch (Exception e) {
                 System.out.println("User list no " + e);
                 noErrors = false;
