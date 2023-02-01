@@ -17,7 +17,6 @@ public class AuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
@@ -30,7 +29,8 @@ public class AuthFilter implements Filter {
         }
 
         if (acces) {
-            // Filtrage OK
+            //For navbar my account
+            req.setAttribute("sessionIdUser", sessionUser.getId());
             chain.doFilter(request, response);
         } else {
             resp.sendRedirect("/");
