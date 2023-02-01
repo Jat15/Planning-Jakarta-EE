@@ -21,6 +21,9 @@
       <li class="nav-item">
         <a class="nav-link" href="${pageContext.request.contextPath}/logout">Logout</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="${pageContext.request.contextPath}/user/update?id=${sessionIdUser}">My Account</a>
+      </li>
     </ul>
   </div>
 </nav>
