@@ -24,48 +24,39 @@ public class UpdateUserServlet extends HttpServlet {
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
 
-        boolean accesPage = false;
-        if (sessionUser != null ) {
-            accesPage = sessionUser.getRole().getId() > 1;
-        }
-        if (accesPage) {
-            String idString = req.getParameter("id");
+        String idString = req.getParameter("id");
 
-            int sessionIdRole = sessionUser.getRole().getId();
-            req.setAttribute("myRole", sessionIdRole);
+        int sessionIdRole = sessionUser.getRole().getId();
+        req.setAttribute("myRole", sessionIdRole);
 
-            try {
-                int id = Integer.parseInt(idString);
-                Optional<User> userOptional = DaoFactory.getUserDao().get(id);
+        try {
+            int id = Integer.parseInt(idString);
+            Optional<User> userOptional = DaoFactory.getUserDao().get(id);
 
-                if (userOptional.isPresent()) {
-                    req.setAttribute("id", userOptional.get().getId());
-                    req.setAttribute("pseudo", userOptional.get().getPseudo());
-                    req.setAttribute("email", userOptional.get().getEmail());
-                    req.setAttribute("lastName", userOptional.get().getLastName());
-                    req.setAttribute("firstName", userOptional.get().getFirstName());
-                    req.setAttribute("avatar", userOptional.get().getAvatar());
-                    req.setAttribute("birthdate", userOptional.get().getBirthdate());
-                    req.setAttribute("phone", userOptional.get().getPhone());
-                    //req.setAttribute("password", userOptional.get().getPassword());
-                    req.setAttribute("activate", userOptional.get().isActivate());
-                    req.setAttribute("street", userOptional.get().getStreet());
-                    req.setAttribute("city", userOptional.get().getCity());
-                    req.setAttribute("country", userOptional.get().getCountry());
-                    req.setAttribute("zip", userOptional.get().getZip());
-                    req.setAttribute("roleName", userOptional.get().getRole().getName());
-                    //Récupére les roles
-                    List<Role> roles= DaoFactory.getRoleDao().getAll();
-                    req.setAttribute("roles", roles);
-                }
-            } catch (Exception e) {
-
+            if (userOptional.isPresent()) {
+                req.setAttribute("id", userOptional.get().getId());
+                req.setAttribute("pseudo", userOptional.get().getPseudo());
+                req.setAttribute("email", userOptional.get().getEmail());
+                req.setAttribute("lastName", userOptional.get().getLastName());
+                req.setAttribute("firstName", userOptional.get().getFirstName());
+                req.setAttribute("avatar", userOptional.get().getAvatar());
+                req.setAttribute("birthdate", userOptional.get().getBirthdate());
+                req.setAttribute("phone", userOptional.get().getPhone());
+                //req.setAttribute("password", userOptional.get().getPassword());
+                req.setAttribute("activate", userOptional.get().isActivate());
+                req.setAttribute("street", userOptional.get().getStreet());
+                req.setAttribute("city", userOptional.get().getCity());
+                req.setAttribute("country", userOptional.get().getCountry());
+                req.setAttribute("zip", userOptional.get().getZip());
+                req.setAttribute("roleName", userOptional.get().getRole().getName());
+                //Récupére les roles
+                List<Role> roles= DaoFactory.getRoleDao().getAll();
+                req.setAttribute("roles", roles);
             }
-            req.getRequestDispatcher("/WEB-INF/userAdd.jsp").forward(req, resp);
+        } catch (Exception e) {
 
-        }else {
-            resp.sendRedirect("/");
         }
+        req.getRequestDispatcher("/WEB-INF/userAdd.jsp").forward(req, resp);
     }
 
     @Override
@@ -73,96 +64,85 @@ public class UpdateUserServlet extends HttpServlet {
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
 
-        boolean accesPage = false;
-        if (sessionUser != null ) {
-            accesPage = sessionUser.getRole().getId() > 1;
+        boolean notError = true;
+
+        String idStr = req.getParameter("id");
+        String pseudo = req.getParameter("pseudo");
+        String email = req.getParameter("email");
+        String lastName = req.getParameter("lastName");
+        String firstName = req.getParameter("firstName");
+        String avatar = req.getParameter("avatar");
+        String phone = req.getParameter("phone");
+        String street = req.getParameter("street");
+        String city = req.getParameter("city");
+        String country = req.getParameter("country");
+        String zip = req.getParameter("zip");
+
+        //Formatage date
+        String birthdateString = req.getParameter("birthdate");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+        LocalDate birthdate = LocalDate.parse(birthdateString, formatter);
+
+
+        //Hash password
+        String password = req.getParameter("password");
+        //String modifyDate = req.getParameter("modifyDate");
+
+        //Activate account
+        String activateString = req.getParameter("activate");
+        //checkbox "" or null
+        boolean activate = activateString != null;
+
+        String idRoleString = req.getParameter("idRole");
+        int idRole = 0;
+        Optional<Role> role = Optional.empty();
+
+        try {
+            idRole = Integer.parseInt(idRoleString);
+            role = DaoFactory.getRoleDao().get(idRole);
+        } catch (Exception e) {
+            System.out.println("idRole error parse int :" + e);
+            notError = false;
         }
 
-        if (accesPage) {
-            boolean notError = true;
-
-            String idStr = req.getParameter("id");
-            String pseudo = req.getParameter("pseudo");
-            String email = req.getParameter("email");
-            String lastName = req.getParameter("lastName");
-            String firstName = req.getParameter("firstName");
-            String avatar = req.getParameter("avatar");
-            String phone = req.getParameter("phone");
-            String street = req.getParameter("street");
-            String city = req.getParameter("city");
-            String country = req.getParameter("country");
-            String zip = req.getParameter("zip");
-
-            //Formatage date
-            String birthdateString = req.getParameter("birthdate");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
-            LocalDate birthdate = LocalDate.parse(birthdateString, formatter);
-
-
-            //Hash password
-            String password = req.getParameter("password");
-            //String modifyDate = req.getParameter("modifyDate");
-
-            //Activate account
-            String activateString = req.getParameter("activate");
-            //checkbox "" or null
-            boolean activate = activateString != null;
-
-            String idRoleString = req.getParameter("idRole");
-            int idRole = 0;
-            Optional<Role> role = Optional.empty();
-
+        if (notError){
             try {
-                idRole = Integer.parseInt(idRoleString);
-                role = DaoFactory.getRoleDao().get(idRole);
-            } catch (Exception e) {
-                System.out.println("idRole error parse int :" + e);
-                notError = false;
-            }
+                int id = Integer.parseInt(idStr);
+                UserDao dao = DaoFactory.getUserDao();
+                Optional<User> user = dao.get(id);
 
-            if (notError){
-                try {
-                    int id = Integer.parseInt(idStr);
-                    UserDao dao = DaoFactory.getUserDao();
-                    Optional<User> user = dao.get(id);
+                if (user.isPresent()) {
+                    User currentUser = user.get();
+                    currentUser.setPseudo(pseudo);
+                    currentUser.setEmail(email);
+                    currentUser.setLastName(lastName);
+                    currentUser.setFirstName(firstName);
+                    currentUser.setAvatar(avatar);
+                    currentUser.setBirthdate(birthdate);
+                    currentUser.setPhone(phone);
 
-                    if (user.isPresent()) {
-                        User currentUser = user.get();
-                        currentUser.setPseudo(pseudo);
-                        currentUser.setEmail(email);
-                        currentUser.setLastName(lastName);
-                        currentUser.setFirstName(firstName);
-                        currentUser.setAvatar(avatar);
-                        currentUser.setBirthdate(birthdate);
-                        currentUser.setPhone(phone);
-
-                        if (!password.isEmpty()) {
-                            currentUser.setPassword(password);
-                        }
-
-                        currentUser.setActivate(activate);
-                        currentUser.setStreet(street);
-                        currentUser.setCity(city);
-                        currentUser.setCountry(country);
-                        currentUser.setZip(zip);
-                        currentUser.setRole(role.get());
-
-                        try {
-                            DaoFactory.getUserDao().update(currentUser);
-                        } catch (Exception e) {
-                            System.out.println("User not updated :" + e);
-                        }
+                    if (!password.isEmpty()) {
+                        currentUser.setPassword(password);
                     }
 
-                } catch (NumberFormatException e) {
-                    System.err.println(e.getMessage());
+                    currentUser.setActivate(activate);
+                    currentUser.setStreet(street);
+                    currentUser.setCity(city);
+                    currentUser.setCountry(country);
+                    currentUser.setZip(zip);
+                    currentUser.setRole(role.get());
+
+                    try {
+                        DaoFactory.getUserDao().update(currentUser);
+                    } catch (Exception e) {
+                        System.out.println("User not updated :" + e);
+                    }
                 }
+
+            } catch (NumberFormatException e) {
+                System.err.println(e.getMessage());
             }
-            resp.sendRedirect("/users");
-        } else {
-            resp.sendRedirect("/");
         }
-
-
+        resp.sendRedirect("/users");
     }
 }
