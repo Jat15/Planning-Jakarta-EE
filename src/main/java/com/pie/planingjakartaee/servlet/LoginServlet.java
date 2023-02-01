@@ -2,7 +2,6 @@ package com.pie.planingjakartaee.servlet;
 
 import com.pie.planingjakartaee.dao.DaoFactory;
 import com.pie.planingjakartaee.dao.entity.User;
-import jakarta.persistence.Entity;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,8 +25,13 @@ public class LoginServlet extends HttpServlet {
         boolean connected = false;
         String email = req.getParameter("email");
         String password = req.getParameter("password");
+        Optional<User> user = Optional.empty();
 
-        Optional<User> user = DaoFactory.getUserDao().getPassword(email);
+        try{
+            user = DaoFactory.getUserDao().getPassword(email);
+        } catch (Exception e) {
+            System.out.println("No acces DB :"+ e);
+        }
 
         HttpSession session = req.getSession();
 
@@ -38,7 +42,6 @@ public class LoginServlet extends HttpServlet {
                 connected = user.get().isActivate() && connected;
             }
         }
-
 
         if (connected) {
             User newUser = user.get();
