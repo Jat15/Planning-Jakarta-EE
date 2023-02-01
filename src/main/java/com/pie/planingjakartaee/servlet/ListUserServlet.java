@@ -20,29 +20,20 @@ public class ListUserServlet extends HttpServlet {
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
 
-        boolean accesPage = false;
-        if (sessionUser != null ) {
-            accesPage = sessionUser.getRole().getId() > 1;
+        boolean noErrors = true;
+        UserDao dao = DaoFactory.getUserDao();
+        int sessionIdRole = sessionUser.getRole().getId();
+
+        List<User> userList = null;
+
+        try {
+            userList = dao.getAllByRole(sessionIdRole);
+        } catch (Exception e) {
+            System.out.println("User list no " + e);
+            noErrors = false;
         }
 
-        if (accesPage) {
-            boolean noErrors = true;
-            UserDao dao = DaoFactory.getUserDao();
-            int sessionIdRole = sessionUser.getRole().getId();
-
-            List<User> userList = null;
-
-            try {
-                userList = dao.getAllByRole(sessionIdRole);
-            } catch (Exception e) {
-                System.out.println("User list no " + e);
-                noErrors = false;
-            }
-
-            req.setAttribute("users", userList);
-            req.getRequestDispatcher("/WEB-INF/usersList.jsp").forward(req, resp);
-        } else {
-            resp.sendRedirect("/");
-        }
+        req.setAttribute("users", userList);
+        req.getRequestDispatcher("/WEB-INF/usersList.jsp").forward(req, resp);
     }
 }

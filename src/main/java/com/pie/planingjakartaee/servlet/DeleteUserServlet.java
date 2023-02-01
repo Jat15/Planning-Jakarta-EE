@@ -17,43 +17,31 @@ import java.util.Optional;
 public class DeleteUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Boolean noErrors = true;
+        boolean noErrors = true;
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
 
-        Boolean accesPage = false;
-        if (sessionUser != null ) {
-            accesPage = sessionUser.getRole().getId() > 1;
-        }
+        String idStr = req.getParameter("id");
+        int sessionIdRole = sessionUser.getRole().getId();
 
-        if (accesPage) {
-            String idStr = req.getParameter("id");
-            int sessionIdRole = sessionUser.getRole().getId();
+        try {
+            int id = Integer.parseInt(idStr);
+            UserDao dao = DaoFactory.getUserDao();
+            Optional<User> user = dao.get(id);
 
-            try {
-                int id = Integer.parseInt(idStr);
-                UserDao dao = DaoFactory.getUserDao();
-                Optional<User> user = dao.get(id);
+            if (user.isPresent()) {
+                int idRole = user.get().getRole().getId();
+                noErrors = idRole > 0 && idRole < sessionIdRole;
 
-                if (user.isPresent()) {
-                    int idRole = user.get().getRole().getId();
-                    noErrors = idRole > 0 && idRole < sessionIdRole;
-
-                    if (noErrors) {
-                        UserDao dao1 = DaoFactory.getUserDao();
-                        dao1.delete(user.get());
-                    }
+                if (noErrors) {
+                    UserDao dao1 = DaoFactory.getUserDao();
+                    dao1.delete(user.get());
                 }
-            } catch (NumberFormatException e) {
-                System.err.println(e.getMessage());
             }
-
-            resp.sendRedirect(req.getContextPath() + "/users");
-
-        } else {
-            resp.sendRedirect("/");
+        } catch (NumberFormatException e) {
+            System.err.println(e.getMessage());
         }
 
-
+        resp.sendRedirect(req.getContextPath() + "/users");
     }
 }
