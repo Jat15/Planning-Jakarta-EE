@@ -1,7 +1,6 @@
 package com.pie.planingjakartaee.servlet;
 
 import com.pie.planingjakartaee.dao.DaoFactory;
-import com.pie.planingjakartaee.dao.UserDao;
 import com.pie.planingjakartaee.dao.entity.Role;
 import com.pie.planingjakartaee.dao.entity.User;
 import jakarta.servlet.ServletException;
@@ -14,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,19 +21,60 @@ import java.util.Optional;
 public class UpdateUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<String> listErrors = new ArrayList<>();
+
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
 
-        String idString = req.getParameter("id");
+        if (sessionUser == null) {
+            listErrors.add("No session");
+        }
 
-        int sessionIdRole = sessionUser.getRole().getId();
-        req.setAttribute("myRole", sessionIdRole);
+        int sessionIdRole = 0;
+        if (listErrors.size() == 0 ) {
+            try {
+                sessionIdRole = sessionUser.getRole().getId();
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("No id in session");
+            }
+        }
 
-        try {
-            int id = Integer.parseInt(idString);
-            Optional<User> userOptional = DaoFactory.getUserDao().get(id);
+        int paramId = 0;
+        if (listErrors.size() == 0 ) {
+            try {
+                String idString = req.getParameter("id");
+                paramId = Integer.parseInt(idString);
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("Id in param is not int");
+            }
+        }
 
+        Optional<User> userOptional = Optional.empty();
+        if (listErrors.size() == 0 ) {
+            try {
+                userOptional = DaoFactory.getUserDao().get(paramId);
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("Request get by id error");
+            }
+        }
+
+        if (listErrors.size() == 0 ) {
             if (userOptional.isPresent()) {
+                if (!(userOptional.get().getRole().getId() < sessionIdRole)) {
+                    if(userOptional.get().getId() != sessionUser.getId()) {
+                        listErrors.add("You do not have authorization to view the page");
+                    }
+                }
+            } else {
+                listErrors.add("User is not in DB");
+            }
+        }
+
+        if (listErrors.size() == 0) {
+            try {
                 req.setAttribute("id", userOptional.get().getId());
                 req.setAttribute("pseudo", userOptional.get().getPseudo());
                 req.setAttribute("email", userOptional.get().getEmail());
@@ -49,24 +90,44 @@ public class UpdateUserServlet extends HttpServlet {
                 req.setAttribute("country", userOptional.get().getCountry());
                 req.setAttribute("zip", userOptional.get().getZip());
                 req.setAttribute("roleName", userOptional.get().getRole().getName());
-                //Récupére les roles
-                List<Role> roles= DaoFactory.getRoleDao().getAll();
-                req.setAttribute("roles", roles);
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("Set Attribute of data user is not possible");
             }
-        } catch (Exception e) {
-
         }
+
+        List<Role> roles = new ArrayList<>();
+        if (listErrors.size() == 0) {
+            try{
+                roles = DaoFactory.getRoleDao().getAll();
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("Set Attribute data user is not possible");
+            }
+        }
+
+        req.setAttribute("roles", roles);
+        req.setAttribute("myRole", sessionIdRole);
+
+        for (String error: listErrors) {
+            System.out.println(error);
+        }
+
         req.getRequestDispatcher("/WEB-INF/userAdd.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<String> listErrors = new ArrayList<>();
+
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
 
-        boolean notError = true;
+        if (sessionUser == null) {
+            listErrors.add("No session");
+        }
 
-        String idStr = req.getParameter("id");
+        String idUserString = req.getParameter("id");
         String pseudo = req.getParameter("pseudo");
         String email = req.getParameter("email");
         String lastName = req.getParameter("lastName");
@@ -77,72 +138,136 @@ public class UpdateUserServlet extends HttpServlet {
         String city = req.getParameter("city");
         String country = req.getParameter("country");
         String zip = req.getParameter("zip");
-
-        //Formatage date
         String birthdateString = req.getParameter("birthdate");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
-        LocalDate birthdate = LocalDate.parse(birthdateString, formatter);
-
-
-        //Hash password
         String password = req.getParameter("password");
-        //String modifyDate = req.getParameter("modifyDate");
-
-        //Activate account
         String activateString = req.getParameter("activate");
-        //checkbox "" or null
-        boolean activate = activateString != null;
-
         String idRoleString = req.getParameter("idRole");
-        int idRole = 0;
-        Optional<Role> role = Optional.empty();
 
+        LocalDate birthdate = LocalDate.now();
         try {
-            idRole = Integer.parseInt(idRoleString);
-            role = DaoFactory.getRoleDao().get(idRole);
-        } catch (Exception e) {
-            System.out.println("idRole error parse int :" + e);
-            notError = false;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
+            birthdate = LocalDate.parse(birthdateString, formatter);
+        } catch(Exception e) {
+            System.err.println(e);
+            listErrors.add("The birthdate cannot be converted");
         }
 
-        if (notError){
+        boolean activate = false;
+        if (listErrors.size() == 0){
             try {
-                int id = Integer.parseInt(idStr);
-                UserDao dao = DaoFactory.getUserDao();
-                Optional<User> user = dao.get(id);
-
-                if (user.isPresent()) {
-                    User currentUser = user.get();
-                    currentUser.setPseudo(pseudo);
-                    currentUser.setEmail(email);
-                    currentUser.setLastName(lastName);
-                    currentUser.setFirstName(firstName);
-                    currentUser.setAvatar(avatar);
-                    currentUser.setBirthdate(birthdate);
-                    currentUser.setPhone(phone);
-
-                    if (!password.isEmpty()) {
-                        currentUser.setPassword(password);
-                    }
-
-                    currentUser.setActivate(activate);
-                    currentUser.setStreet(street);
-                    currentUser.setCity(city);
-                    currentUser.setCountry(country);
-                    currentUser.setZip(zip);
-                    currentUser.setRole(role.get());
-
-                    try {
-                        DaoFactory.getUserDao().update(currentUser);
-                    } catch (Exception e) {
-                        System.out.println("User not updated :" + e);
-                    }
-                }
-
-            } catch (NumberFormatException e) {
-                System.err.println(e.getMessage());
+                activate = activateString != null;
+            } catch(Exception e) {
+                System.err.println(e);
+                listErrors.add("Transforming activate to a boolean value is not possible");
             }
         }
+
+        int id = 0;
+        if (listErrors.size() == 0) {
+            try {
+                id = Integer.parseInt(idUserString);
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("Transforming id user to a integer value is not possible");
+            }
+        }
+
+        Optional<User> user = Optional.empty();
+        if (listErrors.size() == 0) {
+            try {
+                user = DaoFactory.getUserDao().get(id);
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("Request for user id is invalid");
+            }
+        }
+
+        if (listErrors.size() == 0) {
+            if (user.isEmpty()) {
+                listErrors.add("The user you are trying to update is not present in the database");
+            }
+        }
+
+        int idRole = 0;
+        if (listErrors.size() == 0) {
+            if (idRoleString == null){
+                idRole = user.get().getRole().getId();
+            } else {
+                try {
+                    idRole = Integer.parseInt(idRoleString);
+                } catch (Exception e) {
+                    System.err.println(e);
+                    listErrors.add("Transforming id role to a integer value is not possible");
+                }
+            }
+        }
+
+        Optional<Role> role = Optional.empty();
+        if (listErrors.size() == 0) {
+            try {
+                role = DaoFactory.getRoleDao().get(idRole);
+            } catch (Exception e) {
+                System.out.println();
+                listErrors.add("Request for role id is invalid");
+            }
+        }
+
+        if (listErrors.size() == 0) {
+            if (role.isEmpty()) {
+                listErrors.add("The role you are trying to use for updating the user is not present in the database");
+            }
+        }
+
+        if (listErrors.size() == 0 ) {
+            if (!(role.get().getId() < sessionUser.getRole().getId())) {
+                if(user.get().getId() != sessionUser.getId()) {
+                    listErrors.add("You do not have authorization for update user");
+                }
+            }
+        }
+
+        User currentUser = new User();
+        if (listErrors.size() == 0){
+            currentUser = user.get();
+
+            try {
+                currentUser.setPseudo(pseudo);
+                currentUser.setEmail(email);
+                currentUser.setLastName(lastName);
+                currentUser.setFirstName(firstName);
+                currentUser.setAvatar(avatar);
+                currentUser.setBirthdate(birthdate);
+                currentUser.setPhone(phone);
+                currentUser.setActivate(activate);
+                currentUser.setStreet(street);
+                currentUser.setCity(city);
+                currentUser.setCountry(country);
+                currentUser.setZip(zip);
+                currentUser.setRole(role.get());
+
+                if (!password.isEmpty()) {
+                    currentUser.setPassword(password);
+                }
+
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("Request for user id is invalid.");
+            }
+        }
+
+        if (listErrors.size() == 0) {
+            try {
+                DaoFactory.getUserDao().update(currentUser);
+            } catch (Exception e) {
+                System.err.println(e);
+                listErrors.add("The request to update the user encountered an error");
+            }
+        }
+
+        for (String error: listErrors) {
+            System.out.println(error);
+        }
+
         resp.sendRedirect("/users");
     }
 }
