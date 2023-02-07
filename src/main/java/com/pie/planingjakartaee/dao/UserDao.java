@@ -1,9 +1,9 @@
 package com.pie.planingjakartaee.dao;
 
 import com.pie.planingjakartaee.dao.entity.User;
+import com.pie.planingjakartaee.dao.jpa.JPAUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class UserDao implements Dao<User> {
 
     private EntityManager em;
     public UserDao() {
-        em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        em = JPAUtils.getEntityManagerFactory().createEntityManager();
     }
 
     @Override

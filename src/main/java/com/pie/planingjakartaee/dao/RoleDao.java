@@ -1,10 +1,9 @@
 package com.pie.planingjakartaee.dao;
 
 import com.pie.planingjakartaee.dao.entity.Role;
-import com.pie.planingjakartaee.dao.entity.User;
+import com.pie.planingjakartaee.dao.jpa.JPAUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,7 @@ public class RoleDao implements Dao<Role> {
 
     private EntityManager em;
     public RoleDao() {
-        em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        em = JPAUtils.getEntityManagerFactory().createEntityManager();
     }
 
     @Override
