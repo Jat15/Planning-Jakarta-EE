@@ -1,5 +1,6 @@
 package com.pie.planingjakartaee.servlet;
 
+
 import com.pie.planingjakartaee.dao.DaoFactory;
 import com.pie.planingjakartaee.dao.entity.User;
 import jakarta.servlet.ServletException;
@@ -8,8 +9,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.io.IOException;
+import java.security.Security;
 import java.util.Optional;
 
 @WebServlet(urlPatterns = "/")
@@ -19,6 +22,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/login.jsp").forward(req, resp);
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -36,8 +40,8 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = req.getSession();
 
         if (user.isPresent()) {
-            //verify password
-            if (password.equals(user.get().getPassword())){
+            String passwordDb = user.get().getPassword();
+            if (BCrypt.checkpw(password, passwordDb)) {
                 connected = user.get().getRole().getId() > 1;
                 connected = user.get().isActivate() && connected;
             }

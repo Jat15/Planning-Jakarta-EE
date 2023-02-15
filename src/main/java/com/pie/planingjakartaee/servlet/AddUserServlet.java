@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -61,8 +62,8 @@ public class AddUserServlet extends HttpServlet {
 
         String phone = req.getParameter("phone");
 
-        //Hash password
-        String password = req.getParameter("password");
+
+        String password =  BCrypt.hashpw(req.getParameter("password"), BCrypt.gensalt());
         //String createDate = req.getParameter("createDate");
         //String modifyDate = req.getParameter("modifyDate");
 

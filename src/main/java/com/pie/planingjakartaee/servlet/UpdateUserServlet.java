@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -246,7 +247,8 @@ public class UpdateUserServlet extends HttpServlet {
                 currentUser.setRole(role.get());
 
                 if (!password.isEmpty()) {
-                    currentUser.setPassword(password);
+                    String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+                    currentUser.setPassword(passwordHash);
                 }
 
             } catch (Exception e) {
