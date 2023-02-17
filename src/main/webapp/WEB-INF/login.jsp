@@ -15,22 +15,22 @@
     </head>
     <body class="d-flex flex-column justify-content-between min-vh-100">
     <div class="container-fluid">
-        <header class="row">
+        <header class="row text-center bg-light">
             <h1>Gestion de planing</h1>
         </header>
     </div>
     <div class="container">
-    <main class="row">
-        <form action="${pageContext.request.contextPath}/" method="post">
+    <main class="d-flex justify-content-center align-content-center">
+        <form action="${pageContext.request.contextPath}/" method="post" class="bg-light p-3">
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon2">Email</span>
-                <input type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2" name="email" value="${email}">
+                <input type="email" class="form-control" placeholder="jean@hotmail.fr" aria-label="Email" aria-describedby="basic-addon2" name="email" value="${email}">
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon9">Password</span>
-                <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon9" name="password">
+                <input type="password" class="form-control" placeholder="*******" aria-label="Password" aria-describedby="basic-addon9" name="password">
             </div>
 
             <div class="text-center mb-3">
