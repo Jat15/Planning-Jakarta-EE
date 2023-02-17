@@ -27,3 +27,10 @@
     </ul>
   </div>
 </nav>
+<div>
+  <c:forEach items="${errors}" var="error">
+    <div class="alert alert-danger" role="alert">
+        ${error}
+    </div>
+  </c:forEach>
+</div>

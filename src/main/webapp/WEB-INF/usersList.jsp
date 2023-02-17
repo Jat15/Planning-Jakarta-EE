@@ -15,11 +15,12 @@
 
 </head>
 <body>
-
-<div class="container">
-  <header class="row">
-    <%@include file="include/navbar.jsp" %>
-  </header>
+  <div class="container-fluid">
+    <header class="row">
+      <%@include file="include/navbar.jsp" %>
+    </header>
+  </div>
+  <div class="container">
   <main class="row row-cols-1 justify-content-center">
     <c:forEach items="${users}" var="user">
     <div class="col col-auto card text-bg-light p-0 m-3" >
@@ -44,7 +45,7 @@
     </div>
     </c:forEach>
   </main>
-
+  </div>
 <%@include file="include/footer.jsp" %>
 </body>
 </html>
