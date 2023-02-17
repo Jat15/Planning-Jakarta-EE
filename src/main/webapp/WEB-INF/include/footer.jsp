@@ -5,7 +5,7 @@
   Time: 23:55
   To change this template use File | Settings | File Templates.
 --%>
-    <div class="container-fluid">
+    <div class="container-fluid bg-light">
         <footer class="row">
             <p>Planning copyright by Team Pie (Larbi, Sonny, Thibaud)</p>
         </footer>
