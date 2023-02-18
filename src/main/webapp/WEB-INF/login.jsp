@@ -18,14 +18,20 @@
         <header class="row text-center bg-light">
             <h1>Gestion de planing</h1>
         </header>
+        <div>
+            <c:forEach items="${errors}" var="error">
+                <div class="alert alert-danger" role="alert">
+                        ${error}
+                </div>
+            </c:forEach>
+        </div>
     </div>
     <div class="container">
     <main class="d-flex justify-content-center align-content-center">
         <form action="${pageContext.request.contextPath}/" method="post" class="bg-light p-3">
-
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon2">Email</span>
-                <input type="email" class="form-control" placeholder="jean@hotmail.fr" aria-label="Email" aria-describedby="basic-addon2" name="email" value="${email}">
+                <input type="email" class="form-control" placeholder="jean@hotmail.fr" aria-label="Email" aria-describedby="basic-addon2" name="email">
             </div>
 
             <div class="input-group mb-3">
@@ -40,6 +46,5 @@
     </main>
     </div>
     <%@include file="include/footer.jsp" %>
-
 </body>
 </html>
