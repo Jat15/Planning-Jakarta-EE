@@ -74,6 +74,8 @@ public class DeleteUserServlet extends HttpServlet {
 
         if (!listErrors.isEmpty()) {
             session.setAttribute("errors", listErrors);
+        } else {
+            session.setAttribute("success", "The user has been deleted");
         }
 
         resp.sendRedirect(req.getContextPath() + "/users");

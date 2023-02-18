@@ -161,6 +161,8 @@ public class AddUserServlet extends HttpServlet {
 
         if (!listErrors.isEmpty()) {
             session.setAttribute("errors", listErrors);
+        } else {
+            session.setAttribute("success", "The user has been created");
         }
 
         resp.sendRedirect("/users");
