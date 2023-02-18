@@ -84,7 +84,6 @@ public class UpdateUserServlet extends HttpServlet {
                 req.setAttribute("avatar", userOptional.get().getAvatar());
                 req.setAttribute("birthdate", userOptional.get().getBirthdate());
                 req.setAttribute("phone", userOptional.get().getPhone());
-                //req.setAttribute("password", userOptional.get().getPassword());
                 req.setAttribute("activate", userOptional.get().isActivate());
                 req.setAttribute("street", userOptional.get().getStreet());
                 req.setAttribute("city", userOptional.get().getCity());
@@ -107,14 +106,17 @@ public class UpdateUserServlet extends HttpServlet {
             }
         }
 
-        req.setAttribute("roles", roles);
-        req.setAttribute("myRole", sessionIdRole);
 
-        for (String error: listErrors) {
-            System.out.println(error);
+        if (listErrors.size() == 0) {
+            req.setAttribute("roles", roles);
+            req.setAttribute("myRole", sessionIdRole);
+
+            req.getRequestDispatcher("/WEB-INF/userAdd.jsp").forward(req, resp);
+        } else {
+            session.setAttribute("errors", listErrors);
+
+            resp.sendRedirect("/users");
         }
-
-        req.getRequestDispatcher("/WEB-INF/userAdd.jsp").forward(req, resp);
     }
 
     @Override
@@ -154,7 +156,7 @@ public class UpdateUserServlet extends HttpServlet {
         }
 
         boolean activate = false;
-        if (listErrors.size() == 0){
+        if (listErrors.size() == 0) {
             try {
                 activate = activateString != null;
             } catch(Exception e) {
@@ -236,7 +238,6 @@ public class UpdateUserServlet extends HttpServlet {
                 currentUser.setEmail(email);
                 currentUser.setLastName(lastName);
                 currentUser.setFirstName(firstName);
-                currentUser.setAvatar(avatar);
                 currentUser.setBirthdate(birthdate);
                 currentUser.setPhone(phone);
                 currentUser.setActivate(activate);
@@ -246,6 +247,9 @@ public class UpdateUserServlet extends HttpServlet {
                 currentUser.setZip(zip);
                 currentUser.setRole(role.get());
 
+                if (!avatar.isEmpty()) {
+                    currentUser.setAvatar(avatar);
+                }
                 if (!password.isEmpty()) {
                     String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
                     currentUser.setPassword(passwordHash);
@@ -266,8 +270,8 @@ public class UpdateUserServlet extends HttpServlet {
             }
         }
 
-        for (String error: listErrors) {
-            System.out.println(error);
+        if (!listErrors.isEmpty()) {
+            session.setAttribute("errors", listErrors);
         }
 
         resp.sendRedirect("/users");
