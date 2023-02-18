@@ -11,26 +11,36 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(urlPatterns = "/users")
 public class ListUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<String> listErrors = new ArrayList<>();
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
 
-        boolean noErrors = true;
-        UserDao dao = DaoFactory.getUserDao();
         int sessionIdRole = sessionUser.getRole().getId();
 
         List<User> userList = null;
-
         try {
+            UserDao dao = DaoFactory.getUserDao();
             userList = dao.getAllByRole(sessionIdRole);
         } catch (Exception e) {
-            System.out.println("User list no " + e);
-            noErrors = false;
+            System.err.println("No access user list with id" + e);
+            listErrors.add("Unable to access the database");
+        }
+
+        List<String> listOldErrors = (List<String>) session.getAttribute("errors");
+        if (listOldErrors != null) {
+            session.removeAttribute("errors");
+            listErrors.addAll(listOldErrors);
+        }
+
+        if (!listErrors.isEmpty()) {
+            req.setAttribute("errors", listErrors);
         }
 
         req.setAttribute("users", userList);
