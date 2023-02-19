@@ -82,6 +82,33 @@ public class UserDao implements Dao<User> {
         return users;
     }
 
+    public List<User> getAllFind(int idRole, String search) {
+        List<User> users = new ArrayList<>();
+
+        try {
+            users = em.createQuery(
+                            "select p " +
+                                    "from User p " +
+                                    "where p.role.id < ?1 " +
+                                    "and (" +
+                                    "p.lastName like :search " +
+                                    "or p.email like :search " +
+                                    "or p.firstName like :search " +
+                                    "or p.pseudo like :search" +
+                                    ")"
+                            , User.class)
+                    .setParameter(1, idRole)
+                    .setParameter("search", "%" + search + "%")
+                    .getResultList();
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            em.close();
+        }
+
+        return users;
+    }
+
     @Override
     public void create(User user) {
         EntityTransaction et = em.getTransaction();
