@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @WebFilter(urlPatterns = {"/users","/user/*"})
 public class AuthFilter implements Filter {
@@ -33,6 +35,8 @@ public class AuthFilter implements Filter {
             req.setAttribute("sessionIdUser", sessionUser.getId());
             chain.doFilter(request, response);
         } else {
+            List<String> listErrors = Arrays.asList("You are not logged in");
+            session.setAttribute("errors", listErrors);
             resp.sendRedirect("/");
         }
     }

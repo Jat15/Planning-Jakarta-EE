@@ -33,4 +33,9 @@
         ${error}
     </div>
   </c:forEach>
+  <c:if test = "${success != null}">
+    <div class="alert alert-success" role="alert">
+        ${success}
+    </div>
+  </c:if>
 </div>
