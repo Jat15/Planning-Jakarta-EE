@@ -43,6 +43,12 @@ public class ListUserServlet extends HttpServlet {
             req.setAttribute("errors", listErrors);
         }
 
+        String sessionSuccess = (String) session.getAttribute("success");
+        if (sessionSuccess != null) {
+            req.setAttribute("success", sessionSuccess);
+            session.removeAttribute("success");
+        }
+
         req.setAttribute("users", userList);
         req.getRequestDispatcher("/WEB-INF/usersList.jsp").forward(req, resp);
     }
